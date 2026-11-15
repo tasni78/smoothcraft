@@ -1,0 +1,22 @@
+{
+	"required": true,
+	"minVersion": "0.8",
+	"package": "com.smoothcraft.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"client": [
+		"BlockEntityCullMixin",
+		"CloudSkipMixin",
+		"EntityCullMixin",
+		"NameTagCullMixin",
+		"ParticleFilterMixin",
+		"ParticleLimitMixin",
+		"ShadowCullMixin",
+		"StarSkipMixin"
+	],
+	"server": [
+		"ServerThrottleMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	}
+}

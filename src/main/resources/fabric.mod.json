@@ -1,0 +1,34 @@
+{
+	"schemaVersion": 1,
+	"id": "smoothcraft",
+	"version": "${version}",
+	"name": "SmoothCraft 流畅工坊",
+	"description": "客户端性能优化 + 服务端 TPS 守护：实体与方块实体渲染剔除、粒子距离过滤与预算控制、远处实体降频，全部自适应。",
+	"authors": [
+		"lily"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": ""
+	},
+	"license": "MIT",
+	"icon": "assets/smoothcraft/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.smoothcraft.SmoothCraft"
+		],
+		"client": [
+			"com.smoothcraft.client.SmoothCraftClient"
+		]
+	},
+	"mixins": [
+		"smoothcraft.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.20.1",
+		"minecraft": "~26.1.2",
+		"java": ">=25",
+		"fabric-api": "*"
+	}
+}

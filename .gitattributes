@@ -1,0 +1,8 @@
+# 统一换行符，避免 Windows 提交把 shell 脚本改成 CRLF
+* text=auto eol=lf
+
+*.bat text eol=crlf
+gradlew text eol=lf
+
+*.jar binary
+*.png binary

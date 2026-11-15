@@ -24,7 +24,7 @@
 | Fabric API | 0.155.3+26.1.2 或更高 |
 | Java | 25 |
 
-1. 到 [Releases](https://github.com/tasni78/smoothcraft/releases) 下载 `smoothcraft-0.1.0.jar`（或按第七节自行构建）；
+1. 到 [Releases](https://github.com/tasni78/smoothcraft/releases) 下载 `smoothcraft-1.0.0.jar`（或按第七节自行构建）；
 2. 丢进 `.minecraft/mods/`（服务端则是服务器的 `mods/`）；
 3. 确认同目录里有 **Fabric API**，启动即可。
 
@@ -195,7 +195,7 @@ gradlew.bat build
 ./gradlew build
 ```
 
-产物：`build/libs/smoothcraft-0.1.0.jar`。
+产物：`build/libs/smoothcraft-1.0.0.jar`。
 
 > wrapper 默认指向腾讯云 Gradle 镜像（国内直连 `services.gradle.org` 经常卡死）。  
 > 在海外的话把 `gradle/wrapper/gradle-wrapper.properties` 里的 `distributionUrl` 换回官方地址即可。

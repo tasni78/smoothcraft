@@ -1,9 +1,10 @@
 # SmoothCraft 流畅工坊
 
+[![Build](https://img.shields.io/badge/build-local%20verified-brightgreen)](#七构建)
 ![Minecraft](https://img.shields.io/badge/Minecraft-26.1.2-62B47A)
 ![Fabric](https://img.shields.io/badge/Fabric-0.20.1%2B-DBB69B)
 ![Java](https://img.shields.io/badge/Java-25-orange)
-![License](https://img.shields.io/badge/License-MIT-blue)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 面向 **Minecraft Java 26.1.2 / Fabric** 的性能优化模组，客户端和服务端都能装。
 
@@ -23,7 +24,7 @@
 | Fabric API | 0.155.3+26.1.2 或更高 |
 | Java | 25 |
 
-1. 从 Releases 下载 `smoothcraft-0.1.0.jar`（或自行构建）；
+1. 到 [Releases](https://github.com/tasni78/smoothcraft/releases) 下载 `smoothcraft-0.1.0.jar`（或按第七节自行构建）；
 2. 丢进 `.minecraft/mods/`（服务端则是服务器的 `mods/`）；
 3. 确认同目录里有 **Fabric API**，启动即可。
 
@@ -237,4 +238,8 @@ jar 在 `~/.gradle/caches/fabric-loom/minecraftMaven/net/minecraft/minecraft-mer
 
 ## 十一、许可
 
-MIT。修改记录见 [CHANGELOG.md](CHANGELOG.md)。
+本项目采用 **[MIT 许可证](LICENSE)** —— 可以自由使用、修改、分发、商用，保留版权声明即可。
+
+- 源码仓库：<https://github.com/tasni78/smoothcraft>
+- 问题反馈：<https://github.com/tasni78/smoothcraft/issues>
+- 修改记录：[CHANGELOG.md](CHANGELOG.md)

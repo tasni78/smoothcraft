@@ -8,8 +8,9 @@
 		"lily"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": ""
+		"homepage": "https://github.com/tasni78/smoothcraft",
+		"sources": "https://github.com/tasni78/smoothcraft",
+		"issues": "https://github.com/tasni78/smoothcraft/issues"
 	},
 	"license": "MIT",
 	"icon": "assets/smoothcraft/icon.png",

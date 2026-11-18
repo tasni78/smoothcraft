@@ -1,5 +1,34 @@
 {
+	"key.smoothcraft.open_config": "Open SmoothCraft Settings",
 	"key.smoothcraft.toggle_hud": "Toggle Performance Overlay",
 	"key.smoothcraft.toggle_mod": "Toggle SmoothCraft",
-	"key.smoothcraft.reload_config": "Reload Config"
+	"key.smoothcraft.reload_config": "Reload Config",
+
+	"smoothcraft.gui.title": "SmoothCraft Settings",
+
+	"smoothcraft.opt.entity_culling": "Entity culling",
+	"smoothcraft.opt.other_distance": "Other entities",
+	"smoothcraft.opt.mob_distance": "Mob culling distance",
+	"smoothcraft.opt.item_distance": "Item culling distance",
+	"smoothcraft.opt.block_entity_culling": "Block entity culling",
+	"smoothcraft.opt.block_entity_distance": "Distance",
+	"smoothcraft.opt.name_tag": "Name tag distance",
+	"smoothcraft.opt.name_tag_distance": "Distance",
+	"smoothcraft.opt.shadow_culling": "Shadow culling",
+	"smoothcraft.opt.shadow_distance": "Distance",
+
+	"smoothcraft.opt.particle_budget": "Particle budget per tick",
+	"smoothcraft.opt.particle_budget_adaptive": "Shrink budget on low FPS",
+	"smoothcraft.opt.particle_filter": "Particle distance filter",
+	"smoothcraft.opt.particle_filter_distance": "Distance",
+	"smoothcraft.opt.disable_clouds": "Disable clouds",
+	"smoothcraft.opt.skip_stars": "Skip stars",
+
+	"smoothcraft.opt.adaptive": "FPS governor",
+	"smoothcraft.opt.target_fps": "Target FPS",
+	"smoothcraft.opt.min_scale": "Minimum shrink ratio",
+	"smoothcraft.opt.hud": "Performance overlay (F8)",
+	"smoothcraft.opt.server_throttle": "Server entity throttling",
+	"smoothcraft.opt.mspt_threshold": "MSPT threshold",
+	"smoothcraft.opt.throttle_distance": "Throttle distance"
 }

@@ -24,7 +24,7 @@
 | Fabric API | 0.155.3+26.1.2 或更高 |
 | Java | 25 |
 
-1. 到 [Releases](https://github.com/tasni78/smoothcraft/releases) 下载 `smoothcraft-1.0.0.jar`（或按第七节自行构建）；
+1. 到 [Releases](https://github.com/tasni78/smoothcraft/releases) 下载最新版 jar（或按第七节自行构建）；
 2. 丢进 `.minecraft/mods/`（服务端则是服务器的 `mods/`）；
 3. 确认同目录里有 **Fabric API**，启动即可。
 
@@ -70,13 +70,26 @@
 - **粒子预算跟着自适应联动**：掉帧时预算等比缩小，「少粒子 → 少开销 → 回血」形成正反馈，比只砍距离见效更快。
 - **客户端剔除走的是官方本来就允许的 `null` 路径**：`LevelRenderer` 拿到 `null` 会跳过方块实体，`createParticle` 本身也判空，不是硬改渲染流程。
 
-## 三、快捷键（客户端）
+## 三、设置界面与快捷键
+
+按 **`F6`** 打开图形设置界面，所有功能都能在里面开关和调参，不用再手改 JSON。
+
+分三页，避免任何 GUI 缩放下把控件挤出去：
+
+| 页 | 内容 |
+| --- | --- |
+| 渲染 | 实体剔除 + 分类距离、方块实体剔除、名牌距离、阴影剔除 |
+| 粒子与画面 | 粒子预算、预算联动、粒子距离过滤、云层、星空 |
+| 守护与服务端 | 帧率守护、目标帧率、收缩下限、性能面板、服务端降频与阈值 |
+
+改动**即时生效**（能立刻看到帧率变化），点「保存并关闭」写入文件；点「取消」则丢弃本次改动、恢复文件里的值。直接按 Esc 关闭等同于保存，避免「看着改了其实没存」。
 
 | 键 | 作用 |
 | --- | --- |
+| `F6` | 打开设置界面 |
 | `F8` | 开关性能面板 |
 | `F9` | 开关整个模组（排查兼容性时一键静音所有优化） |
-| `F7` | 热重载配置文件（改完 JSON 不用重启） |
+| `F7` | 热重载配置文件（手工改 JSON 之后用） |
 
 按键可以在「选项 → 控制 → 杂项」里重新绑定。
 
@@ -168,8 +181,10 @@ smoothcraft/
     │   │   ├── SmoothCraftClient.java  客户端入口
     │   │   ├── PerfGovernor.java       帧率守护 / 自适应调度
     │   │   ├── PerfHud.java            性能面板
-    │   │   ├── SmoothCraftKeys.java    F7/F8/F9 快捷键
-    │   │   └── Stats.java              每秒统计
+    │   │   ├── SmoothCraftKeys.java    F6~F9 快捷键
+    │   │   ├── Stats.java              每秒统计
+    │   │   └── gui/
+    │   │       └── SmoothCraftConfigScreen.java  图形设置界面（三页）
     │   ├── config/
     │   │   ├── SmoothCraftConfig.java  JSON 配置（Gson）
     │   │   └── ResolvedConfig.java     字符串 ID → 注册表对象（带缓存）
@@ -195,7 +210,7 @@ gradlew.bat build
 ./gradlew build
 ```
 
-产物：`build/libs/smoothcraft-1.0.0.jar`。
+产物：`build/libs/smoothcraft-1.1.0.jar`。
 
 > wrapper 默认指向腾讯云 Gradle 镜像（国内直连 `services.gradle.org` 经常卡死）。  
 > 在海外的话把 `gradle/wrapper/gradle-wrapper.properties` 里的 `distributionUrl` 换回官方地址即可。
@@ -232,7 +247,7 @@ jar 在 `~/.gradle/caches/fabric-loom/minecraftMaven/net/minecraft/minecraft-mer
 ## 十、后续计划
 
 - 客户端 HUD 里显示服务端 TPS（走自定义 payload 同步）
-- 游戏内配置界面（Cloth Config + Mod Menu），替代手改 JSON
+- 界面里直接预览剔除效果（高亮被剔除的实体）
 - 掉落物数量过多时的合并渲染
 - 生物 AI 节流 / 刷怪笼限流（风险更高，需要单独开关）
 

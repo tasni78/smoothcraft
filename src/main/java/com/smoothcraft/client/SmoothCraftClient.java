@@ -31,7 +31,7 @@ public class SmoothCraftClient implements ClientModInitializer {
 			fmt(cfg.entityCulling.mobsDistance), fmt(cfg.entityCulling.itemsDistance),
 			fmt(cfg.entityCulling.maxDistance), fmt(cfg.blockEntityCulling.maxDistance),
 			fmt(cfg.nameTagCulling.maxDistance));
-		LOGGER.info("[SmoothCraft] 快捷键：F7 重载配置 / F8 性能面板 / F9 总开关；配置：{}",
+		LOGGER.info("[SmoothCraft] 快捷键：F6 设置界面 / F7 重载配置 / F8 性能面板 / F9 总开关；配置：{}",
 			SmoothCraftConfig.configPath());
 	}
 

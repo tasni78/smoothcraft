@@ -1,18 +1,22 @@
 package com.smoothcraft.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.smoothcraft.client.gui.SmoothCraftConfigScreen;
 import com.smoothcraft.config.SmoothCraftConfig;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.minecraft.client.KeyMapping;
+import net.minecraft.client.Minecraft;
 import org.lwjgl.glfw.GLFW;
 
 /**
  * 快捷键：
+ *   F6 —— 打开设置界面（可视化开关所有功能）
+ *   F7 —— 热重载配置文件（手工改 JSON 之后用）
  *   F8 —— 开关性能面板
  *   F9 —— 开关整个模组（排查兼容性时一键关掉所有优化）
- *   F7 —— 热重载配置文件（改完 JSON 不用重启游戏）
  */
 public final class SmoothCraftKeys {
+	private static KeyMapping openConfig;
 	private static KeyMapping toggleHud;
 	private static KeyMapping toggleMod;
 	private static KeyMapping reloadConfig;
@@ -21,6 +25,8 @@ public final class SmoothCraftKeys {
 	}
 
 	public static void register() {
+		openConfig = KeyMappingHelper.registerKeyMapping(new KeyMapping(
+			"key.smoothcraft.open_config", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_F6, KeyMapping.Category.MISC));
 		toggleHud = KeyMappingHelper.registerKeyMapping(new KeyMapping(
 			"key.smoothcraft.toggle_hud", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_F8, KeyMapping.Category.MISC));
 		toggleMod = KeyMappingHelper.registerKeyMapping(new KeyMapping(
@@ -35,6 +41,13 @@ public final class SmoothCraftKeys {
 		}
 
 		boolean changed = false;
+
+		while (openConfig.consumeClick()) {
+			Minecraft mc = Minecraft.getInstance();
+			if (mc.screen == null) {
+				mc.setScreen(new SmoothCraftConfigScreen(SmoothCraftConfig.get()));
+			}
+		}
 
 		while (toggleHud.consumeClick()) {
 			SmoothCraftConfig cfg = SmoothCraftConfig.get();

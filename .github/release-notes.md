@@ -1,4 +1,4 @@
-# SmoothCraft 流畅工坊 v1.1.0
+# SmoothCraft 流畅工坊 v1.0.1
 
 Minecraft **26.1.2** · Fabric **0.20.1+** · Java **25**
 
@@ -34,7 +34,7 @@ Minecraft **26.1.2** · Fabric **0.20.1+** · Java **25**
 
 ## 下载与安装
 
-- 附件：`smoothcraft-1.1.0.jar`
+- 附件：`smoothcraft-1.0.1.jar`
 - 前置：**Fabric Loader 0.20.1+** 与 **Fabric API 0.155.3+26.1.2**
 - 客户端放 `.minecraft/mods/`，服务端放服务器 `mods/`
 

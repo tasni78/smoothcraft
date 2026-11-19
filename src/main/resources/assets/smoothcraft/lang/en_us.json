@@ -19,6 +19,8 @@
 
 	"smoothcraft.opt.particle_budget": "Particle budget per tick",
 	"smoothcraft.opt.particle_budget_adaptive": "Shrink budget on low FPS",
+	"smoothcraft.opt.item_cluster": "Item render optimization",
+	"smoothcraft.opt.item_copies": "Max copies per stack",
 	"smoothcraft.opt.particle_filter": "Particle distance filter",
 	"smoothcraft.opt.particle_filter_distance": "Distance",
 	"smoothcraft.opt.disable_clouds": "Disable clouds",

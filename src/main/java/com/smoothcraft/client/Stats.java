@@ -22,6 +22,17 @@ public final class Stats {
 	private Stats() {
 	}
 
+	// ---- 每帧统计（由 FrameResetMixin 在每帧开头清零）----
+	/** 本帧被「同格同类」聚合掉的掉落物数量。 */
+	public static int aggregatedItems;
+	/** 本帧被压掉的额外模型份数（如 64 堆叠原本 5 份、压到 3 份 → 记 2）。 */
+	public static int suppressedCopies;
+
+	public static void resetFrameCounter() {
+		aggregatedItems = 0;
+		suppressedCopies = 0;
+	}
+
 	public static void flush() {
 		culledEntitiesPerSec = culledEntities;
 		culledBlockEntitiesPerSec = culledBlockEntities;

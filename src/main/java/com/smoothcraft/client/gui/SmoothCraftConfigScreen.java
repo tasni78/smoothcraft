@@ -92,6 +92,8 @@ public class SmoothCraftConfigScreen extends Screen {
 
 				toggle(boxX, y, boxW, "particle_budget_adaptive", "预算跟随掉帧收缩", cfg.particleLimiting.followAdaptive,
 					v -> cfg.particleLimiting.followAdaptive = v);
+				toggle(sliderX, y, sliderW, "item_cluster", "掉落物渲染优化", cfg.itemCluster.enabled,
+					v -> cfg.itemCluster.enabled = v);
 				y += ROW_HEIGHT;
 
 				toggle(boxX, y, boxW, "particle_filter", "粒子距离过滤", cfg.particleFilter.enabled,
@@ -100,11 +102,13 @@ public class SmoothCraftConfigScreen extends Screen {
 					cfg.particleFilter.maxDistance, " 格", v -> cfg.particleFilter.maxDistance = v);
 				y += ROW_HEIGHT;
 
-				toggle(boxX, y, boxW, "disable_clouds", "关闭云层", cfg.rendering.disableClouds,
-					v -> cfg.rendering.disableClouds = v);
+				slider(boxX, y, boxW + sliderW + 2, "item_copies", "一叠最多画几份（原版最多 5）", 1, 5, 1,
+					cfg.itemCluster.maxCopiesPerStack, " 份", v -> cfg.itemCluster.maxCopiesPerStack = v.intValue());
 				y += ROW_HEIGHT;
 
-				toggle(boxX, y, boxW, "skip_stars", "跳过星空", cfg.rendering.skipStars,
+				toggle(boxX, y, boxW, "disable_clouds", "关闭云层", cfg.rendering.disableClouds,
+					v -> cfg.rendering.disableClouds = v);
+				toggle(sliderX, y, sliderW, "skip_stars", "跳过星空", cfg.rendering.skipStars,
 					v -> cfg.rendering.skipStars = v);
 			}
 			case 2 -> {

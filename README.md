@@ -38,6 +38,7 @@
 | 方块实体剔除 | `BlockEntityRenderDispatcher#tryExtractRenderState` | 超距返回 `null` 跳过 | 64 格 |
 | 粒子预算 | `ParticleEngine#add` | 每刻新建粒子超预算直接丢弃（连对象都不创建） | 400 / 刻 |
 | **粒子距离过滤** | `ParticleEngine#makeParticle` | 火把火焰、各类烟、营火烟、岩浆滴落，超过距离不再生成 | 24 格 |
+| **掉落物优化** | `ItemClusterRenderState#getRenderedAmount`、`EntityRenderDispatcher#shouldRender` | 一叠最多画 3 份模型（原版满堆叠画 5 份）；同格同类物品一帧只画一个 | 3 份 |
 | 名牌距离限制 | `EntityRenderer#shouldShowName` | 远处不画名字 | 32 格 |
 | 阴影剔除 | `EntityRenderer#getShadowRadius` | 远处实体不画落地阴影（返回 0 原版就跳过） | 48 格 |
 | 云层跳过（可选） | `CloudRenderer#render` | 完全关闭云 | 默认关 |
@@ -65,6 +66,7 @@
 
 - **只影响「画不画 / 算不算这一帧」，不改游戏规则**。渲染剔除不碰实体逻辑，服务端降频不碰近处实体。
 - **掉落物单独一档阈值**。刷怪塔、农场附近能堆上千个掉落物/经验球，每个都要走一遍渲染管线，但视觉上最不重要——所以压到 32 格，这是本模组收益最大的单项。
+- **掉落物渲染优化的两层**：原版按堆叠数量画多份模型（满 64 画 5 份），压到 3 份不影响堆叠数量本身；同格同类去重只跳过视觉上完全重叠的重复项，且**先做距离剔除再做去重**，避免「标记成画过了、随后又被剔除」导致整格什么都不画。
 - **玩家永远渲染**（`keepPlayersAlways`），PVP 时不会看不到远处对手。
 - **帧率守护是渐变的**，收缩比例有下限（默认 0.4），远处的生物是「逐渐淡出」而不是突然消失，也不会因为一两帧抖动来回跳。
 - **粒子预算跟着自适应联动**：掉帧时预算等比缩小，「少粒子 → 少开销 → 回血」形成正反馈，比只砍距离见效更快。
@@ -162,6 +164,7 @@ SmoothCraft 配置已重新加载
     "entityTypes": ["minecraft:item", "minecraft:experience_orb"]
   },
   "nameTagCulling": { "enabled": true, "maxDistance": 32.0 },
+  "itemCluster": { "enabled": true, "maxCopiesPerStack": 3, "aggregateSameBlock": true },
   "rendering": { "disableClouds": false, "skipStars": false },
   "adaptive": { "enabled": true, "targetFps": 60, "minScale": 0.4 },
   "hud": {
@@ -193,6 +196,7 @@ smoothcraft/
     │   │   ├── SmoothCraftClient.java  客户端入口
     │   │   ├── PerfGovernor.java       帧率守护 / 自适应调度
     │   │   ├── PerfHud.java            性能面板
+    │   │   ├── ItemAggregator.java     掉落物同格同类去重（每帧重置）
     │   │   ├── SmoothCraftKeys.java    F6~F9 快捷键
     │   │   ├── Stats.java              每秒统计
     │   │   └── gui/
@@ -223,7 +227,7 @@ gradlew.bat build
 ./gradlew build
 ```
 
-产物：`build/libs/smoothcraft-1.0.2.jar`。
+产物：`build/libs/smoothcraft-1.0.3.jar`。
 
 > wrapper 默认指向腾讯云 Gradle 镜像（国内直连 `services.gradle.org` 经常卡死）。  
 > 在海外的话把 `gradle/wrapper/gradle-wrapper.properties` 里的 `distributionUrl` 换回官方地址即可。

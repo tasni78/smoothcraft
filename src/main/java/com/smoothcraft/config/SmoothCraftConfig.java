@@ -32,6 +32,8 @@ public final class SmoothCraftConfig {
 	public ParticleLimiting particleLimiting = new ParticleLimiting();
 	/** 按距离过滤指定粒子（火把、营火这类，客户端）。 */
 	public ParticleFilter particleFilter = new ParticleFilter();
+	/** 掉落物数量过多时的渲染优化。 */
+	public ItemCluster itemCluster = new ItemCluster();
 	/** 服务端：MSPT 过高时对远处杂项实体降频。 */
 	public ServerThrottle serverThrottle = new ServerThrottle();
 	public NameTagCulling nameTagCulling = new NameTagCulling();
@@ -98,6 +100,18 @@ public final class SmoothCraftConfig {
 			"minecraft:crimson_spore",
 			"minecraft:warped_spore"
 		));
+	}
+
+	public static class ItemCluster {
+		/** 是否启用掉落物渲染优化。 */
+		public boolean enabled = true;
+		/**
+		 * 一叠最多画几份模型。原版按数量递增：1→1、≥16→2、≥32→3、≥48→4、满 64→5 份。
+		 * 压到 3 份观感几乎不变，但满堆叠的几何量少了 40%。
+		 */
+		public int maxCopiesPerStack = 3;
+		/** 同一方块位置内的同种物品，一帧只画一个（其余跳过），农场场景收益最大。 */
+		public boolean aggregateSameBlock = true;
 	}
 
 	public static class ServerThrottle {
@@ -210,6 +224,7 @@ public final class SmoothCraftConfig {
 		if (blockEntityCulling == null) blockEntityCulling = new BlockEntityCulling();
 		if (particleLimiting == null) particleLimiting = new ParticleLimiting();
 		if (particleFilter == null) particleFilter = new ParticleFilter();
+		if (itemCluster == null) itemCluster = new ItemCluster();
 		if (serverThrottle == null) serverThrottle = new ServerThrottle();
 		if (nameTagCulling == null) nameTagCulling = new NameTagCulling();
 		if (rendering == null) rendering = new Rendering();

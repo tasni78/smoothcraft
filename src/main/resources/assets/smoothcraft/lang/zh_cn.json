@@ -19,6 +19,8 @@
 
 	"smoothcraft.opt.particle_budget": "每刻粒子预算",
 	"smoothcraft.opt.particle_budget_adaptive": "预算跟随掉帧收缩",
+	"smoothcraft.opt.item_cluster": "掉落物渲染优化",
+	"smoothcraft.opt.item_copies": "一叠最多画几份（原版最多 5）",
 	"smoothcraft.opt.particle_filter": "粒子距离过滤",
 	"smoothcraft.opt.particle_filter_distance": "距离",
 	"smoothcraft.opt.disable_clouds": "关闭云层",

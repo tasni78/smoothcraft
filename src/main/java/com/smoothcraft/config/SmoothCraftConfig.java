@@ -142,11 +142,28 @@ public final class SmoothCraftConfig {
 	public static class Hud {
 		/** 性能面板开关，可用 F8 随时切换。 */
 		public boolean enabled = true;
-		/** 面板左上角坐标。 */
+		/** 面板左上角坐标（GUI 像素）。 */
 		public int x = 4;
 		public int y = 4;
 		/** 是否绘制半透明背景。 */
 		public boolean background = true;
+		/** 背景不透明度 0~255。 */
+		public int backgroundAlpha = 140;
+		/** 文字缩放百分比，100 = 原始大小（允许 50~200）。 */
+		public float scalePercent = 100.0F;
+		/** 拖动时是否吸附到 8 像素网格。 */
+		public boolean snapToGrid = true;
+
+		/** 归一化后的缩放系数。 */
+		public float scale() {
+			float percent = Math.max(50.0F, Math.min(200.0F, scalePercent));
+			return percent / 100.0F;
+		}
+
+		/** 实际生效的背景 alpha：关掉背景就返回 0。 */
+		public int effectiveAlpha() {
+			return background ? Math.max(0, Math.min(255, backgroundAlpha)) : 0;
+		}
 	}
 
 	public static SmoothCraftConfig get() {

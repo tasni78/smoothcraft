@@ -30,5 +30,15 @@
 	"smoothcraft.opt.hud": "性能面板（F8）",
 	"smoothcraft.opt.server_throttle": "服务端远处实体降频",
 	"smoothcraft.opt.mspt_threshold": "MSPT 阈值",
-	"smoothcraft.opt.throttle_distance": "降频距离（玩家附近不降频）"
+	"smoothcraft.opt.throttle_distance": "降频距离（玩家附近不降频）",
+
+	"smoothcraft.opt.hud_scale": "缩放",
+	"smoothcraft.opt.hud_background": "绘制背景",
+	"smoothcraft.opt.hud_opacity": "背景不透明度",
+	"smoothcraft.opt.hud_snap": "拖动时吸附到网格（8 像素）",
+
+	"smoothcraft.gui.hud_position": "调整面板位置…",
+	"smoothcraft.gui.hud_editor": "调整性能面板位置",
+	"smoothcraft.gui.hud_reset": "重置到左上角",
+	"smoothcraft.gui.done": "完成"
 }

@@ -1,6 +1,7 @@
 package com.smoothcraft.client.gui;
 
 import com.smoothcraft.config.SmoothCraftConfig;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.Button;
@@ -22,7 +23,7 @@ import java.util.function.Consumer;
  */
 public class SmoothCraftConfigScreen extends Screen {
 	private static final int ROW_HEIGHT = 22;
-	private static final int PAGES = 3;
+	private static final int PAGES = 4;
 
 	private static final int COLOR_TITLE = 0xFFFFFFFF;
 	private static final int COLOR_HINT = 0xFFA0A8B4;
@@ -106,7 +107,7 @@ public class SmoothCraftConfigScreen extends Screen {
 				toggle(boxX, y, boxW, "skip_stars", "跳过星空", cfg.rendering.skipStars,
 					v -> cfg.rendering.skipStars = v);
 			}
-			default -> {
+			case 2 -> {
 				toggle(boxX, y, boxW, "adaptive", "帧率守护", cfg.adaptive.enabled,
 					v -> cfg.adaptive.enabled = v);
 				slider(sliderX, y, sliderW, "target_fps", "目标帧率", 30, 240, 10,
@@ -117,10 +118,6 @@ public class SmoothCraftConfigScreen extends Screen {
 					cfg.adaptive.minScale * 100.0D, " %", v -> cfg.adaptive.minScale = v / 100.0D);
 				y += ROW_HEIGHT;
 
-				toggle(boxX, y, boxW, "hud", "性能面板（F8）", cfg.hud.enabled,
-					v -> cfg.hud.enabled = v);
-				y += ROW_HEIGHT;
-
 				toggle(boxX, y, boxW, "server_throttle", "服务端远处实体降频", cfg.serverThrottle.enabled,
 					v -> cfg.serverThrottle.enabled = v);
 				slider(sliderX, y, sliderW, "mspt_threshold", "MSPT 阈值", 20, 100, 5,
@@ -129,6 +126,29 @@ public class SmoothCraftConfigScreen extends Screen {
 
 				slider(boxX, y, boxW + sliderW + 2, "throttle_distance", "降频距离（玩家附近不降频）", 16, 96, 8,
 					cfg.serverThrottle.maxDistance, " 格", v -> cfg.serverThrottle.maxDistance = v);
+			}
+			default -> {
+				toggle(boxX, y, boxW, "hud", "性能面板（F8）", cfg.hud.enabled,
+					v -> cfg.hud.enabled = v);
+				slider(sliderX, y, sliderW, "hud_scale", "缩放", 50, 200, 5,
+					cfg.hud.scalePercent, " %", v -> cfg.hud.scalePercent = v.floatValue());
+				y += ROW_HEIGHT;
+
+				toggle(boxX, y, boxW, "hud_background", "绘制背景", cfg.hud.background,
+					v -> cfg.hud.background = v);
+				slider(sliderX, y, sliderW, "hud_opacity", "背景不透明度", 0, 100, 5,
+					cfg.hud.backgroundAlpha * 100.0D / 255.0D, " %",
+					v -> cfg.hud.backgroundAlpha = (int) Math.round(v * 255.0D / 100.0D));
+				y += ROW_HEIGHT;
+
+				toggle(boxX, y, boxW + sliderW + 2, "hud_snap", "拖动时吸附到网格（8 像素）", cfg.hud.snapToGrid,
+					v -> cfg.hud.snapToGrid = v);
+				y += ROW_HEIGHT;
+
+				addRenderableWidget(Button.builder(
+						Component.translatableWithFallback("smoothcraft.gui.hud_position", "调整面板位置…"),
+						b -> Minecraft.getInstance().setScreen(new SmoothCraftHudEditorScreen(cfg)))
+					.bounds(boxX, y, boxW + sliderW + 2, 20).build());
 			}
 		}
 

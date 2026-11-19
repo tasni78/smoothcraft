@@ -74,13 +74,21 @@
 
 按 **`F6`** 打开图形设置界面，所有功能都能在里面开关和调参，不用再手改 JSON。
 
-分三页，避免任何 GUI 缩放下把控件挤出去：
+分四页，避免任何 GUI 缩放下把控件挤出去：
 
 | 页 | 内容 |
 | --- | --- |
 | 渲染 | 实体剔除 + 分类距离、方块实体剔除、名牌距离、阴影剔除 |
 | 粒子与画面 | 粒子预算、预算联动、粒子距离过滤、云层、星空 |
-| 守护与服务端 | 帧率守护、目标帧率、收缩下限、性能面板、服务端降频与阈值 |
+| 守护与服务端 | 帧率守护、目标帧率、收缩下限、服务端降频与阈值 |
+| 面板外观 | 性能面板开关、缩放、背景不透明度、网格吸附、**调整位置** |
+
+**调整面板位置**：点「调整面板位置…」会进入一个专门的编辑器——游戏内鼠标是锁定的（用来转视角），所以必须让鼠标先释放出来才能拖。进去后：
+
+- 按住左键直接拖，实时跟随
+- 靠近屏幕四边**自动贴边**，其余位置**吸附到 8 像素网格**
+- 拖动时显示青色边框和贴边参考线，底部实时显示坐标
+- `Esc` 或「完成」保存并返回设置界面，「重置到左上角」一键回到初始位置
 
 改动**即时生效**（能立刻看到帧率变化），点「保存并关闭」写入文件；点「取消」则丢弃本次改动、恢复文件里的值。直接按 Esc 关闭等同于保存，避免「看着改了其实没存」。
 
@@ -156,7 +164,11 @@ SmoothCraft 配置已重新加载
   "nameTagCulling": { "enabled": true, "maxDistance": 32.0 },
   "rendering": { "disableClouds": false, "skipStars": false },
   "adaptive": { "enabled": true, "targetFps": 60, "minScale": 0.4 },
-  "hud": { "enabled": true, "x": 4, "y": 4, "background": true }
+  "hud": {
+    "enabled": true, "x": 4, "y": 4,
+    "background": true, "backgroundAlpha": 140,
+    "scalePercent": 100.0, "snapToGrid": true
+  }
 }
 ```
 
@@ -184,7 +196,8 @@ smoothcraft/
     │   │   ├── SmoothCraftKeys.java    F6~F9 快捷键
     │   │   ├── Stats.java              每秒统计
     │   │   └── gui/
-    │   │       └── SmoothCraftConfigScreen.java  图形设置界面（三页）
+    │   │       ├── SmoothCraftConfigScreen.java  图形设置界面（四页）
+    │   │       └── SmoothCraftHudEditorScreen.java  面板位置编辑器（拖动 + 吸附）
     │   ├── config/
     │   │   ├── SmoothCraftConfig.java  JSON 配置（Gson）
     │   │   └── ResolvedConfig.java     字符串 ID → 注册表对象（带缓存）
@@ -210,7 +223,7 @@ gradlew.bat build
 ./gradlew build
 ```
 
-产物：`build/libs/smoothcraft-1.0.1.jar`。
+产物：`build/libs/smoothcraft-1.0.2.jar`。
 
 > wrapper 默认指向腾讯云 Gradle 镜像（国内直连 `services.gradle.org` 经常卡死）。  
 > 在海外的话把 `gradle/wrapper/gradle-wrapper.properties` 里的 `distributionUrl` 换回官方地址即可。

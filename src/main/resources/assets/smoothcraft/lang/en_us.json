@@ -30,5 +30,15 @@
 	"smoothcraft.opt.hud": "Performance overlay (F8)",
 	"smoothcraft.opt.server_throttle": "Server entity throttling",
 	"smoothcraft.opt.mspt_threshold": "MSPT threshold",
-	"smoothcraft.opt.throttle_distance": "Throttle distance"
+	"smoothcraft.opt.throttle_distance": "Throttle distance",
+
+	"smoothcraft.opt.hud_scale": "Scale",
+	"smoothcraft.opt.hud_background": "Draw background",
+	"smoothcraft.opt.hud_opacity": "Background opacity",
+	"smoothcraft.opt.hud_snap": "Snap to grid while dragging",
+
+	"smoothcraft.gui.hud_position": "Move overlay…",
+	"smoothcraft.gui.hud_editor": "Move performance overlay",
+	"smoothcraft.gui.hud_reset": "Reset to top-left",
+	"smoothcraft.gui.done": "Done"
 }

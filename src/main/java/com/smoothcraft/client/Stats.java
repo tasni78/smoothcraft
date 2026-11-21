@@ -27,10 +27,13 @@ public final class Stats {
 	public static int aggregatedItems;
 	/** 本帧被压掉的额外模型份数（如 64 堆叠原本 5 份、压到 3 份 → 记 2）。 */
 	public static int suppressedCopies;
+	/** 本帧被节流推迟的区块编译任务数（不是丢弃，下一帧会重试）。 */
+	public static int throttledChunkRebuilds;
 
 	public static void resetFrameCounter() {
 		aggregatedItems = 0;
 		suppressedCopies = 0;
+		throttledChunkRebuilds = 0;
 	}
 
 	public static void flush() {

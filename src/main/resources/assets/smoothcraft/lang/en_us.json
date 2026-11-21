@@ -45,6 +45,12 @@
 	"smoothcraft.opt.ramp_start": "Ramp start distance",
 	"smoothcraft.opt.ramp_speed": "Chunks per second",
 
+	"smoothcraft.opt.chunk_compile": "Chunk compile throttle",
+	"smoothcraft.opt.chunk_per_frame": "Per frame",
+	"smoothcraft.opt.orb_aggregate": "Merge XP orbs (2×2×2 blocks)",
+	"smoothcraft.opt.sign_text": "Sign text distance cull",
+	"smoothcraft.opt.sign_text_distance": "Distance",
+
 	"smoothcraft.gui.hud_position": "Move overlay…",
 	"smoothcraft.gui.hud_editor": "Move performance overlay",
 	"smoothcraft.gui.hud_reset": "Reset to top-left",

@@ -120,6 +120,7 @@ public final class PerfHud implements HudElement {
 				+ "  阴影 " + Stats.culledShadowsPerSec,
 			"粒子  丢弃 " + Stats.droppedParticlesPerSec + "  距离过滤 " + Stats.filteredParticlesPerSec + " / 秒",
 			"掉落物  同格聚合 " + Stats.aggregatedItems + "  份数压制 " + Stats.suppressedCopies,
+			chunkLine(),
 			adapt
 		};
 	}
@@ -127,5 +128,18 @@ public final class PerfHud implements HudElement {
 	/** 把面板夹在屏幕内，避免拖动后跑到看不见的地方。 */
 	public static int clamp(int value, int min, int max) {
 		return Math.max(min, Math.min(max, value));
+	}
+
+	/** 区块编译队列与节流量：跑图卡顿时看这一行。 */
+	private static String chunkLine() {
+		int queue = 0;
+		Minecraft mc = Minecraft.getInstance();
+		if (mc != null && mc.levelRenderer != null) {
+			var dispatcher = mc.levelRenderer.getSectionRenderDispatcher();
+			if (dispatcher != null) {
+				queue = dispatcher.getCompileQueueSize();
+			}
+		}
+		return "区块  队列 " + queue + "  节流 " + Stats.throttledChunkRebuilds;
 	}
 }

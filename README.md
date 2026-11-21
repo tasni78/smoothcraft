@@ -45,6 +45,9 @@
 | 星空跳过（可选） | `SkyRenderer#renderStars` | 不画星星 | 默认关 |
 | **帧率守护** | `Minecraft#getFps()` 每秒采样 | 掉帧自动收缩剔除距离 + 粒子预算，回血后缓慢恢复 | 目标 60 FPS |
 | **入场加载** | `LevelLoadTracker`、`Options#getEffectiveRenderDistance` | 不等脚下区块编译完就放行；入场后视距从 4 格逐秒爬升 | 每秒 +2 格 |
+| **区块编译节流** | `RenderSection#rebuildSectionAsync` | 每帧最多提交 6 个编译任务，削平跑图时的帧时间尖峰 | 6 个/帧 |
+| **经验球聚合** | `EntityRenderDispatcher#shouldRender` | 2×2×2 方块内的经验球一帧只画一个 | — |
+| **告示牌文字剔除** | `AbstractSignRenderer#extractRenderState` | 远处只画木板不画文字（文字是独立几何层） | 24 格 |
 | **性能面板** | Fabric HUD API | 实时显示 FPS / 剔除数 / 丢弃粒子 / 自适应比例 | F8 开关 |
 
 ## 二、服务端做了什么
@@ -77,7 +80,7 @@
 
 按 **`F6`** 打开图形设置界面，所有功能都能在里面开关和调参，不用再手改 JSON。
 
-分五页，避免任何 GUI 缩放下把控件挤出去：
+分六页，避免任何 GUI 缩放下把控件挤出去：
 
 | 页 | 内容 |
 | --- | --- |
@@ -86,6 +89,7 @@
 | 守护与服务端 | 帧率守护、目标帧率、收缩下限、服务端降频与阈值 |
 | 面板外观 | 性能面板开关、缩放、背景不透明度、网格吸附、**调整位置** |
 | 进入世界 | 提前放行、视距爬坡开关、起始视距、每秒增速 |
+| 区块与文字 | 区块编译节流与每帧上限、经验球聚合、告示牌文字距离 |
 
 **调整面板位置**：点「调整面板位置…」会进入一个专门的编辑器——游戏内鼠标是锁定的（用来转视角），所以必须让鼠标先释放出来才能拖。进去后：
 
@@ -179,6 +183,8 @@ SmoothCraft 配置已重新加载
     "enabled": true, "skipLoadingWait": true, "rampEnabled": true,
     "startChunks": 4, "chunksPerSecond": 2
   },
+  "chunkCompile": { "enabled": true, "maxPerFrame": 6 },
+  "signText": { "enabled": true, "maxDistance": 24.0 },
   "rendering": { "disableClouds": false, "skipStars": false },
   "adaptive": { "enabled": true, "targetFps": 60, "minScale": 0.4 },
   "hud": {
@@ -212,6 +218,7 @@ smoothcraft/
     │   │   ├── PerfHud.java            性能面板
     │   │   ├── ItemAggregator.java     掉落物同格同类去重（每帧重置）
     │   │   ├── RenderDistanceRamp.java 入场视距爬坡
+    │   │   ├── ChunkCompileBudget.java 区块编译节流预算
     │   │   ├── SmoothCraftKeys.java    F6~F9 快捷键
     │   │   ├── Stats.java              每秒统计
     │   │   └── gui/
@@ -242,7 +249,7 @@ gradlew.bat build
 ./gradlew build
 ```
 
-产物：`build/libs/smoothcraft-1.0.4.jar`。
+产物：`build/libs/smoothcraft-1.0.5.jar`。
 
 > wrapper 默认指向腾讯云 Gradle 镜像（国内直连 `services.gradle.org` 经常卡死）。  
 > 在海外的话把 `gradle/wrapper/gradle-wrapper.properties` 里的 `distributionUrl` 换回官方地址即可。

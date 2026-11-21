@@ -1,5 +1,6 @@
 package com.smoothcraft.mixin;
 
+import com.smoothcraft.client.ChunkCompileBudget;
 import com.smoothcraft.client.ItemAggregator;
 import com.smoothcraft.client.RenderDistanceRamp;
 import com.smoothcraft.client.Stats;
@@ -22,6 +23,7 @@ public class FrameResetMixin {
 	@Inject(method = "runTick", at = @At("HEAD"))
 	private void smoothcraft$beginFrame(boolean renderLevel, CallbackInfo ci) {
 		ItemAggregator.beginFrame();
+		ChunkCompileBudget.beginFrame();
 		Stats.resetFrameCounter();
 	}
 

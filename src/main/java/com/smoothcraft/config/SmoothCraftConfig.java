@@ -36,6 +36,10 @@ public final class SmoothCraftConfig {
 	public ItemCluster itemCluster = new ItemCluster();
 	/** 进入世界时的加载优化。 */
 	public WorldLoad worldLoad = new WorldLoad();
+	/** 区块编译节流（治跑图卡顿）。 */
+	public ChunkCompile chunkCompile = new ChunkCompile();
+	/** 告示牌文字距离剔除。 */
+	public SignText signText = new SignText();
 	/** 服务端：MSPT 过高时对远处杂项实体降频。 */
 	public ServerThrottle serverThrottle = new ServerThrottle();
 	public NameTagCulling nameTagCulling = new NameTagCulling();
@@ -114,6 +118,8 @@ public final class SmoothCraftConfig {
 		public int maxCopiesPerStack = 3;
 		/** 同一方块位置内的同种物品，一帧只画一个（其余跳过），农场场景收益最大。 */
 		public boolean aggregateSameBlock = true;
+		/** 经验球也做聚合（按 2×2×2 方块合并），刷怪塔场景收益明显。 */
+		public boolean aggregateOrbs = true;
 	}
 
 	public static class WorldLoad {
@@ -130,6 +136,24 @@ public final class SmoothCraftConfig {
 		public int startChunks = 4;
 		/** 每秒增加的格数。 */
 		public int chunksPerSecond = 2;
+	}
+
+	public static class ChunkCompile {
+		/** 是否限制每帧提交的区块编译任务数。 */
+		public boolean enabled = true;
+		/**
+		 * 每帧最多提交多少个区块编译任务。
+		 * 跑图时区块会集中变脏，一次全塞进队列会让主线程在后续帧集中上传网格，造成掉帧；
+		 * 摊到多帧能削平尖峰。被跳过的区块仍是脏的，下一帧会重试，不会漏建。
+		 */
+		public int maxPerFrame = 6;
+	}
+
+	public static class SignText {
+		/** 是否对远处告示牌跳过文字渲染（木板照画）。 */
+		public boolean enabled = true;
+		/** 超过这个距离（格）不再渲染告示牌文字。 */
+		public double maxDistance = 24.0D;
 	}
 
 	public static class ServerThrottle {
@@ -244,6 +268,8 @@ public final class SmoothCraftConfig {
 		if (particleFilter == null) particleFilter = new ParticleFilter();
 		if (itemCluster == null) itemCluster = new ItemCluster();
 		if (worldLoad == null) worldLoad = new WorldLoad();
+		if (chunkCompile == null) chunkCompile = new ChunkCompile();
+		if (signText == null) signText = new SignText();
 		if (serverThrottle == null) serverThrottle = new ServerThrottle();
 		if (nameTagCulling == null) nameTagCulling = new NameTagCulling();
 		if (rendering == null) rendering = new Rendering();

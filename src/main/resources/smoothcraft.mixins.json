@@ -5,6 +5,7 @@
 	"compatibilityLevel": "JAVA_25",
 	"client": [
 		"BlockEntityCullMixin",
+		"ChunkCompileThrottleMixin",
 		"CloudSkipMixin",
 		"EntityCullMixin",
 		"FrameResetMixin",
@@ -15,6 +16,7 @@
 		"ParticleLimitMixin",
 		"RenderDistanceRampMixin",
 		"ShadowCullMixin",
+		"SignTextCullMixin",
 		"StarSkipMixin"
 	],
 	"server": [

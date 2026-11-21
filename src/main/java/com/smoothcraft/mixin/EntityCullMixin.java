@@ -58,6 +58,15 @@ public class EntityCullMixin {
 			&& ItemAggregator.isDuplicate(item)) {
 			Stats.aggregatedItems++;
 			cir.setReturnValue(false);
+			return;
+		}
+
+		// 3) 经验球聚合（2×2×2 方块为格子）—— 刷怪塔门口经常一片经验球
+		if (cfg.itemCluster.enabled && cfg.itemCluster.aggregateOrbs
+			&& entity instanceof ExperienceOrb orb
+			&& ItemAggregator.isDuplicateOrb(orb)) {
+			Stats.aggregatedItems++;
+			cir.setReturnValue(false);
 		}
 	}
 

@@ -23,7 +23,7 @@ import java.util.function.Consumer;
  */
 public class SmoothCraftConfigScreen extends Screen {
 	private static final int ROW_HEIGHT = 22;
-	private static final int PAGES = 5;
+	private static final int PAGES = 6;
 
 	private static final int COLOR_TITLE = 0xFFFFFFFF;
 	private static final int COLOR_HINT = 0xFFA0A8B4;
@@ -154,7 +154,7 @@ public class SmoothCraftConfigScreen extends Screen {
 						b -> Minecraft.getInstance().setScreen(new SmoothCraftHudEditorScreen(cfg)))
 					.bounds(boxX, y, boxW + sliderW + 2, 20).build());
 			}
-			default -> {
+			case 4 -> {
 				toggle(boxX, y, boxW, "world_load", "进入世界优化", cfg.worldLoad.enabled,
 					v -> cfg.worldLoad.enabled = v);
 				toggle(sliderX, y, sliderW, "skip_loading_wait", "提前放行", cfg.worldLoad.skipLoadingWait,
@@ -171,6 +171,22 @@ public class SmoothCraftConfigScreen extends Screen {
 
 				slider(boxX, y, boxW + sliderW + 2, "ramp_speed", "每秒增加视距", 1, 8, 1,
 					cfg.worldLoad.chunksPerSecond, " 格", v -> cfg.worldLoad.chunksPerSecond = v.intValue());
+			}
+			default -> {
+				toggle(boxX, y, boxW, "chunk_compile", "区块编译节流", cfg.chunkCompile.enabled,
+					v -> cfg.chunkCompile.enabled = v);
+				slider(sliderX, y, sliderW, "chunk_per_frame", "每帧上限", 1, 32, 1,
+					cfg.chunkCompile.maxPerFrame, " 个", v -> cfg.chunkCompile.maxPerFrame = v.intValue());
+				y += ROW_HEIGHT;
+
+				toggle(boxX, y, boxW + sliderW + 2, "orb_aggregate", "经验球同格聚合（2×2×2 方块）",
+					cfg.itemCluster.aggregateOrbs, v -> cfg.itemCluster.aggregateOrbs = v);
+				y += ROW_HEIGHT;
+
+				toggle(boxX, y, boxW, "sign_text", "告示牌文字距离剔除", cfg.signText.enabled,
+					v -> cfg.signText.enabled = v);
+				slider(sliderX, y, sliderW, "sign_text_distance", "距离", 8, 64, 4,
+					cfg.signText.maxDistance, " 格", v -> cfg.signText.maxDistance = v);
 			}
 		}
 

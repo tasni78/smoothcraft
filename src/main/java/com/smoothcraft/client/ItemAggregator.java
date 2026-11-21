@@ -1,6 +1,8 @@
 package com.smoothcraft.client;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.item.ItemEntity;
 
 import java.util.HashSet;
@@ -20,6 +22,8 @@ public final class ItemAggregator {
 	private static final long HASH_MULTIPLIER = 0x9E3779B97F4A7C15L;
 
 	private static final Set<Long> SEEN = new HashSet<>(256);
+	/** 经验球单独一份集合：它们没有物品种类，按更粗的格子（2×2×2 方块）合并。 */
+	private static final Set<Long> SEEN_ORBS = new HashSet<>(128);
 
 	private ItemAggregator() {
 	}
@@ -29,6 +33,9 @@ public final class ItemAggregator {
 		if (!SEEN.isEmpty()) {
 			SEEN.clear();
 		}
+		if (!SEEN_ORBS.isEmpty()) {
+			SEEN_ORBS.clear();
+		}
 	}
 
 	/** 返回 true 表示同格同类的掉落物本帧已经画过，可以跳过。 */
@@ -36,5 +43,15 @@ public final class ItemAggregator {
 		int itemId = BuiltInRegistries.ITEM.getId(item.getItem().getItem());
 		long key = item.blockPosition().asLong() * HASH_MULTIPLIER + itemId;
 		return !SEEN.add(key);
+	}
+
+	/**
+	 * 经验球去重：按 2×2×2 方块为格子。
+	 * 经验球没有"物品种类"，而且会被吸向玩家、位置更集中，所以格子放粗一点收益更好。
+	 */
+	public static boolean isDuplicateOrb(ExperienceOrb orb) {
+		BlockPos pos = orb.blockPosition();
+		long key = BlockPos.asLong(pos.getX() >> 1, pos.getY() >> 1, pos.getZ() >> 1) * HASH_MULTIPLIER;
+		return !SEEN_ORBS.add(key);
 	}
 }

@@ -45,6 +45,12 @@
 	"smoothcraft.opt.ramp_start": "爬坡起始视距",
 	"smoothcraft.opt.ramp_speed": "每秒增加视距",
 
+	"smoothcraft.opt.chunk_compile": "区块编译节流",
+	"smoothcraft.opt.chunk_per_frame": "每帧上限",
+	"smoothcraft.opt.orb_aggregate": "经验球同格聚合（2×2×2 方块）",
+	"smoothcraft.opt.sign_text": "告示牌文字距离剔除",
+	"smoothcraft.opt.sign_text_distance": "距离",
+
 	"smoothcraft.gui.hud_position": "调整面板位置…",
 	"smoothcraft.gui.hud_editor": "调整性能面板位置",
 	"smoothcraft.gui.hud_reset": "重置到左上角",

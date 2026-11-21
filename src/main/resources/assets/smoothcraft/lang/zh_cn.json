@@ -39,6 +39,12 @@
 	"smoothcraft.opt.hud_opacity": "背景不透明度",
 	"smoothcraft.opt.hud_snap": "拖动时吸附到网格（8 像素）",
 
+	"smoothcraft.opt.world_load": "进入世界优化",
+	"smoothcraft.opt.skip_loading_wait": "提前放行",
+	"smoothcraft.opt.ramp_enabled": "入场后视距爬坡",
+	"smoothcraft.opt.ramp_start": "爬坡起始视距",
+	"smoothcraft.opt.ramp_speed": "每秒增加视距",
+
 	"smoothcraft.gui.hud_position": "调整面板位置…",
 	"smoothcraft.gui.hud_editor": "调整性能面板位置",
 	"smoothcraft.gui.hud_reset": "重置到左上角",

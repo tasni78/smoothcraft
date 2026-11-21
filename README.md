@@ -44,6 +44,7 @@
 | 云层跳过（可选） | `CloudRenderer#render` | 完全关闭云 | 默认关 |
 | 星空跳过（可选） | `SkyRenderer#renderStars` | 不画星星 | 默认关 |
 | **帧率守护** | `Minecraft#getFps()` 每秒采样 | 掉帧自动收缩剔除距离 + 粒子预算，回血后缓慢恢复 | 目标 60 FPS |
+| **入场加载** | `LevelLoadTracker`、`Options#getEffectiveRenderDistance` | 不等脚下区块编译完就放行；入场后视距从 4 格逐秒爬升 | 每秒 +2 格 |
 | **性能面板** | Fabric HUD API | 实时显示 FPS / 剔除数 / 丢弃粒子 / 自适应比例 | F8 开关 |
 
 ## 二、服务端做了什么
@@ -76,7 +77,7 @@
 
 按 **`F6`** 打开图形设置界面，所有功能都能在里面开关和调参，不用再手改 JSON。
 
-分四页，避免任何 GUI 缩放下把控件挤出去：
+分五页，避免任何 GUI 缩放下把控件挤出去：
 
 | 页 | 内容 |
 | --- | --- |
@@ -84,6 +85,7 @@
 | 粒子与画面 | 粒子预算、预算联动、粒子距离过滤、云层、星空 |
 | 守护与服务端 | 帧率守护、目标帧率、收缩下限、服务端降频与阈值 |
 | 面板外观 | 性能面板开关、缩放、背景不透明度、网格吸附、**调整位置** |
+| 进入世界 | 提前放行、视距爬坡开关、起始视距、每秒增速 |
 
 **调整面板位置**：点「调整面板位置…」会进入一个专门的编辑器——游戏内鼠标是锁定的（用来转视角），所以必须让鼠标先释放出来才能拖。进去后：
 
@@ -91,6 +93,14 @@
 - 靠近屏幕四边**自动贴边**，其余位置**吸附到 8 像素网格**
 - 拖动时显示青色边框和贴边参考线，底部实时显示坐标
 - `Esc` 或「完成」保存并返回设置界面，「重置到左上角」一键回到初始位置
+
+**进入世界的加载优化**（第 5 页）：
+
+- **提前放行**：原版要等「脚下那一格网格编译完成」才让你进世界。现在只要玩家所在区块的**数据**到了就放行，省几秒等待，代价是进世界瞬间可能看到一小片空洞，网格编译完即补齐。
+- **视距爬坡**：入场后有效视距从 4 格起步、每秒 +2 格，涨到你设定的视距。只钳渲染与雾（`Options#getEffectiveRenderDistance`），不改设置项、不触发区块重载，避免开局一次性编译上千区块造成的掉帧。
+- 爬坡期间性能面板最后一行会显示「视距 6→32」。
+
+> 需要说明：单人模式里「构建地形」进度条耗时**主要来自服务端生成出生点区块**，这部分客户端优化不了——没生成的区块没法画。所以本页的收益集中在"进世界之后那几秒"和多人服务器场景。
 
 改动**即时生效**（能立刻看到帧率变化），点「保存并关闭」写入文件；点「取消」则丢弃本次改动、恢复文件里的值。直接按 Esc 关闭等同于保存，避免「看着改了其实没存」。
 
@@ -165,6 +175,10 @@ SmoothCraft 配置已重新加载
   },
   "nameTagCulling": { "enabled": true, "maxDistance": 32.0 },
   "itemCluster": { "enabled": true, "maxCopiesPerStack": 3, "aggregateSameBlock": true },
+  "worldLoad": {
+    "enabled": true, "skipLoadingWait": true, "rampEnabled": true,
+    "startChunks": 4, "chunksPerSecond": 2
+  },
   "rendering": { "disableClouds": false, "skipStars": false },
   "adaptive": { "enabled": true, "targetFps": 60, "minScale": 0.4 },
   "hud": {
@@ -197,6 +211,7 @@ smoothcraft/
     │   │   ├── PerfGovernor.java       帧率守护 / 自适应调度
     │   │   ├── PerfHud.java            性能面板
     │   │   ├── ItemAggregator.java     掉落物同格同类去重（每帧重置）
+    │   │   ├── RenderDistanceRamp.java 入场视距爬坡
     │   │   ├── SmoothCraftKeys.java    F6~F9 快捷键
     │   │   ├── Stats.java              每秒统计
     │   │   └── gui/
@@ -227,7 +242,7 @@ gradlew.bat build
 ./gradlew build
 ```
 
-产物：`build/libs/smoothcraft-1.0.3.jar`。
+产物：`build/libs/smoothcraft-1.0.4.jar`。
 
 > wrapper 默认指向腾讯云 Gradle 镜像（国内直连 `services.gradle.org` 经常卡死）。  
 > 在海外的话把 `gradle/wrapper/gradle-wrapper.properties` 里的 `distributionUrl` 换回官方地址即可。

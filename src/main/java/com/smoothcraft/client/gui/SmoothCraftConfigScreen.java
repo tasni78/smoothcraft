@@ -23,7 +23,7 @@ import java.util.function.Consumer;
  */
 public class SmoothCraftConfigScreen extends Screen {
 	private static final int ROW_HEIGHT = 22;
-	private static final int PAGES = 4;
+	private static final int PAGES = 5;
 
 	private static final int COLOR_TITLE = 0xFFFFFFFF;
 	private static final int COLOR_HINT = 0xFFA0A8B4;
@@ -131,7 +131,7 @@ public class SmoothCraftConfigScreen extends Screen {
 				slider(boxX, y, boxW + sliderW + 2, "throttle_distance", "降频距离（玩家附近不降频）", 16, 96, 8,
 					cfg.serverThrottle.maxDistance, " 格", v -> cfg.serverThrottle.maxDistance = v);
 			}
-			default -> {
+			case 3 -> {
 				toggle(boxX, y, boxW, "hud", "性能面板（F8）", cfg.hud.enabled,
 					v -> cfg.hud.enabled = v);
 				slider(sliderX, y, sliderW, "hud_scale", "缩放", 50, 200, 5,
@@ -153,6 +153,24 @@ public class SmoothCraftConfigScreen extends Screen {
 						Component.translatableWithFallback("smoothcraft.gui.hud_position", "调整面板位置…"),
 						b -> Minecraft.getInstance().setScreen(new SmoothCraftHudEditorScreen(cfg)))
 					.bounds(boxX, y, boxW + sliderW + 2, 20).build());
+			}
+			default -> {
+				toggle(boxX, y, boxW, "world_load", "进入世界优化", cfg.worldLoad.enabled,
+					v -> cfg.worldLoad.enabled = v);
+				toggle(sliderX, y, sliderW, "skip_loading_wait", "提前放行", cfg.worldLoad.skipLoadingWait,
+					v -> cfg.worldLoad.skipLoadingWait = v);
+				y += ROW_HEIGHT;
+
+				toggle(boxX, y, boxW + sliderW + 2, "ramp_enabled", "入场后视距爬坡", cfg.worldLoad.rampEnabled,
+					v -> cfg.worldLoad.rampEnabled = v);
+				y += ROW_HEIGHT;
+
+				slider(boxX, y, boxW + sliderW + 2, "ramp_start", "爬坡起始视距", 1, 16, 1,
+					cfg.worldLoad.startChunks, " 格", v -> cfg.worldLoad.startChunks = v.intValue());
+				y += ROW_HEIGHT;
+
+				slider(boxX, y, boxW + sliderW + 2, "ramp_speed", "每秒增加视距", 1, 8, 1,
+					cfg.worldLoad.chunksPerSecond, " 格", v -> cfg.worldLoad.chunksPerSecond = v.intValue());
 			}
 		}
 

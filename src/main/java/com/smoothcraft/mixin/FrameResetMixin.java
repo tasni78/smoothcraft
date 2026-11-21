@@ -1,8 +1,10 @@
 package com.smoothcraft.mixin;
 
 import com.smoothcraft.client.ItemAggregator;
+import com.smoothcraft.client.RenderDistanceRamp;
 import com.smoothcraft.client.Stats;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -21,5 +23,15 @@ public class FrameResetMixin {
 	private void smoothcraft$beginFrame(boolean renderLevel, CallbackInfo ci) {
 		ItemAggregator.beginFrame();
 		Stats.resetFrameCounter();
+	}
+
+	/** 进入世界（或退出世界时 level 为 null）时启动 / 复位视距爬坡。 */
+	@Inject(method = "setLevel", at = @At("TAIL"))
+	private void smoothcraft$onLevelSet(ClientLevel level, CallbackInfo ci) {
+		if (level == null) {
+			RenderDistanceRamp.reset();
+		} else {
+			RenderDistanceRamp.onWorldJoin();
+		}
 	}
 }

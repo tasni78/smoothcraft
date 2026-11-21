@@ -108,13 +108,19 @@ public final class PerfHud implements HudElement {
 		float scale = PerfGovernor.scale();
 		int percent = Math.round(scale * 100.0F);
 
+		String adapt = "自适应 " + percent + "%   实体距离 " + Math.round(cfg.entityCulling.maxDistance * scale) + " 格";
+		String ramp = RenderDistanceRamp.status();
+		if (ramp != null) {
+			adapt = adapt + "   " + ramp;
+		}
+
 		return new String[]{
 			"SmoothCraft  " + (mc == null ? 0 : mc.getFps()) + " FPS",
 			"剔除  实体 " + Stats.culledEntitiesPerSec + "  方块实体 " + Stats.culledBlockEntitiesPerSec
 				+ "  阴影 " + Stats.culledShadowsPerSec,
 			"粒子  丢弃 " + Stats.droppedParticlesPerSec + "  距离过滤 " + Stats.filteredParticlesPerSec + " / 秒",
 			"掉落物  同格聚合 " + Stats.aggregatedItems + "  份数压制 " + Stats.suppressedCopies,
-			"自适应 " + percent + "%   实体距离 " + Math.round(cfg.entityCulling.maxDistance * scale) + " 格"
+			adapt
 		};
 	}
 

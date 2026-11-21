@@ -34,6 +34,8 @@ public final class SmoothCraftConfig {
 	public ParticleFilter particleFilter = new ParticleFilter();
 	/** 掉落物数量过多时的渲染优化。 */
 	public ItemCluster itemCluster = new ItemCluster();
+	/** 进入世界时的加载优化。 */
+	public WorldLoad worldLoad = new WorldLoad();
 	/** 服务端：MSPT 过高时对远处杂项实体降频。 */
 	public ServerThrottle serverThrottle = new ServerThrottle();
 	public NameTagCulling nameTagCulling = new NameTagCulling();
@@ -112,6 +114,22 @@ public final class SmoothCraftConfig {
 		public int maxCopiesPerStack = 3;
 		/** 同一方块位置内的同种物品，一帧只画一个（其余跳过），农场场景收益最大。 */
 		public boolean aggregateSameBlock = true;
+	}
+
+	public static class WorldLoad {
+		/** 是否启用进入世界时的加载优化。 */
+		public boolean enabled = true;
+		/**
+		 * 不再等「脚下那一格网格编译完」才放行 —— 只要玩家所在区块的数据到了就进世界。
+		 * 进世界瞬间可能看到一小片空洞，等网格编译完会补齐。
+		 */
+		public boolean skipLoadingWait = true;
+		/** 入场后视距从 startChunks 开始逐秒爬升，避免一进世界就要编译上千区块。 */
+		public boolean rampEnabled = true;
+		/** 爬坡起始视距（格）。 */
+		public int startChunks = 4;
+		/** 每秒增加的格数。 */
+		public int chunksPerSecond = 2;
 	}
 
 	public static class ServerThrottle {
@@ -225,6 +243,7 @@ public final class SmoothCraftConfig {
 		if (particleLimiting == null) particleLimiting = new ParticleLimiting();
 		if (particleFilter == null) particleFilter = new ParticleFilter();
 		if (itemCluster == null) itemCluster = new ItemCluster();
+		if (worldLoad == null) worldLoad = new WorldLoad();
 		if (serverThrottle == null) serverThrottle = new ServerThrottle();
 		if (nameTagCulling == null) nameTagCulling = new NameTagCulling();
 		if (rendering == null) rendering = new Rendering();

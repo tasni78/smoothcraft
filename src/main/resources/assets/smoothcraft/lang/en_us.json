@@ -39,6 +39,12 @@
 	"smoothcraft.opt.hud_opacity": "Background opacity",
 	"smoothcraft.opt.hud_snap": "Snap to grid while dragging",
 
+	"smoothcraft.opt.world_load": "World load optimization",
+	"smoothcraft.opt.skip_loading_wait": "Enter earlier",
+	"smoothcraft.opt.ramp_enabled": "Render distance ramp",
+	"smoothcraft.opt.ramp_start": "Ramp start distance",
+	"smoothcraft.opt.ramp_speed": "Chunks per second",
+
 	"smoothcraft.gui.hud_position": "Move overlay…",
 	"smoothcraft.gui.hud_editor": "Move performance overlay",
 	"smoothcraft.gui.hud_reset": "Reset to top-left",

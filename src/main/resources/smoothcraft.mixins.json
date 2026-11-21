@@ -9,9 +9,11 @@
 		"EntityCullMixin",
 		"FrameResetMixin",
 		"ItemStackCopiesMixin",
+		"LoadingWaitMixin",
 		"NameTagCullMixin",
 		"ParticleFilterMixin",
 		"ParticleLimitMixin",
+		"RenderDistanceRampMixin",
 		"ShadowCullMixin",
 		"StarSkipMixin"
 	],

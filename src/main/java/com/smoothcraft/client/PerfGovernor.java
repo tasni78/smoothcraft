@@ -53,19 +53,24 @@ public final class PerfGovernor {
 	public static void onEndTick(Minecraft mc) {
 		SmoothCraftConfig cfg = SmoothCraftConfig.get();
 
-		if (!cfg.enabled || !cfg.adaptive.enabled) {
-			scale = 1.0F;
-			struggling = false;
-			return;
-		}
-
+		// 采样计时 + 统计结算必须一直跑 —— 它们是独立于「帧率守护」的东西。
+		// 之前把 flush 写在 adaptive 判断之后，导致关掉帧率守护时直接 return，
+		// 累计值永远不结算，HUD 上就全是 0（同时累计值还会无限增长）。
 		if (++ticks < SAMPLE_INTERVAL) {
 			return;
 		}
 		ticks = 0;
 
-		// 结算上一秒的剔除统计，供 HUD 显示
 		Stats.flush();
+
+		// 面板上的 FPS 始终是真实值，与守护开关无关
+		lastFps = mc.getFps();
+
+		if (!cfg.enabled || !cfg.adaptive.enabled) {
+			scale = 1.0F;
+			struggling = false;
+			return;
+		}
 
 		// 不在世界里（主菜单 / 加载中）时不做判断，直接把系数恢复满
 		if (mc.level == null || mc.player == null || mc.isPaused()) {
@@ -74,8 +79,7 @@ public final class PerfGovernor {
 			return;
 		}
 
-		int fps = mc.getFps();
-		lastFps = fps;
+		int fps = lastFps;
 
 		double minScale = Math.max(0.2D, Math.min(1.0D, cfg.adaptive.minScale));
 		int target = Math.max(15, cfg.adaptive.targetFps);

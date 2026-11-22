@@ -44,6 +44,8 @@
 	"smoothcraft.opt.ramp_enabled": "Render distance ramp",
 	"smoothcraft.opt.ramp_start": "Ramp start distance",
 	"smoothcraft.opt.ramp_speed": "Chunks per second",
+	"smoothcraft.opt.skip_wait_max": "Max wait before entering",
+	"smoothcraft.opt.player_exempt": "Player-radius exemption",
 
 	"smoothcraft.opt.chunk_compile": "Chunk compile throttle",
 	"smoothcraft.opt.chunk_per_frame": "Per frame",

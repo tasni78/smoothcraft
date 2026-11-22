@@ -44,6 +44,8 @@
 	"smoothcraft.opt.ramp_enabled": "入场后视距爬坡",
 	"smoothcraft.opt.ramp_start": "爬坡起始视距",
 	"smoothcraft.opt.ramp_speed": "每秒增加视距",
+	"smoothcraft.opt.skip_wait_max": "提前放行最多等待（0 = 立刻进）",
+	"smoothcraft.opt.player_exempt": "玩家附近豁免（脚下的区块永不节流）",
 
 	"smoothcraft.opt.chunk_compile": "区块编译节流",
 	"smoothcraft.opt.chunk_per_frame": "每帧上限",

@@ -1,5 +1,6 @@
 package com.smoothcraft.mixin;
 
+import com.smoothcraft.client.WorldLoadTimer;
 import com.smoothcraft.config.SmoothCraftConfig;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
@@ -42,7 +43,15 @@ public abstract class LoadingWaitMixin {
 		}
 
 		BlockPos pos = this.player.blockPosition();
-		if (this.level.getChunkSource().hasChunk(pos.getX() >> 4, pos.getZ() >> 4)) {
+		if (!this.level.getChunkSource().hasChunk(pos.getX() >> 4, pos.getZ() >> 4)) {
+			return;
+		}
+
+		// 早期版本是「拿到区块数据就立刻放行」，结果进世界时脚下网格还没编译完，
+		// 视野里一片空洞、看着像闪白。现在改成「最多等 N 毫秒」：
+		// 网格编译得快就跟原版一样，编译得慢也不会干等到天荒地老。
+		int maxWait = Math.max(0, cfg.worldLoad.skipWaitMaxMs);
+		if (WorldLoadTimer.elapsedMs() >= maxWait) {
 			cir.setReturnValue(true);
 		}
 	}

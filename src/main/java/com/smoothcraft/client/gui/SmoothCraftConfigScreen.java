@@ -157,12 +157,12 @@ public class SmoothCraftConfigScreen extends Screen {
 			case 4 -> {
 				toggle(boxX, y, boxW, "world_load", "进入世界优化", cfg.worldLoad.enabled,
 					v -> cfg.worldLoad.enabled = v);
-				toggle(sliderX, y, sliderW, "skip_loading_wait", "提前放行", cfg.worldLoad.skipLoadingWait,
+				toggle(sliderX, y, sliderW, "skip_loading_wait", "提前放行（会看到空洞）", cfg.worldLoad.skipLoadingWait,
 					v -> cfg.worldLoad.skipLoadingWait = v);
 				y += ROW_HEIGHT;
 
-				toggle(boxX, y, boxW + sliderW + 2, "ramp_enabled", "入场后视距爬坡", cfg.worldLoad.rampEnabled,
-					v -> cfg.worldLoad.rampEnabled = v);
+				toggle(boxX, y, boxW + sliderW + 2, "ramp_enabled", "入场后视距爬坡（会看到大片空洞，不推荐）",
+					cfg.worldLoad.rampEnabled, v -> cfg.worldLoad.rampEnabled = v);
 				y += ROW_HEIGHT;
 
 				slider(boxX, y, boxW + sliderW + 2, "ramp_start", "爬坡起始视距", 1, 16, 1,
@@ -171,12 +171,21 @@ public class SmoothCraftConfigScreen extends Screen {
 
 				slider(boxX, y, boxW + sliderW + 2, "ramp_speed", "每秒增加视距", 1, 8, 1,
 					cfg.worldLoad.chunksPerSecond, " 格", v -> cfg.worldLoad.chunksPerSecond = v.intValue());
+				y += ROW_HEIGHT;
+
+				slider(boxX, y, boxW + sliderW + 2, "skip_wait_max", "提前放行最多等待（0 = 立刻进）", 0, 5, 0.5,
+					cfg.worldLoad.skipWaitMaxMs / 1000.0D, " 秒",
+					v -> cfg.worldLoad.skipWaitMaxMs = (int) Math.round(v * 1000.0D));
 			}
 			default -> {
 				toggle(boxX, y, boxW, "chunk_compile", "区块编译节流", cfg.chunkCompile.enabled,
 					v -> cfg.chunkCompile.enabled = v);
 				slider(sliderX, y, sliderW, "chunk_per_frame", "每帧上限", 1, 32, 1,
 					cfg.chunkCompile.maxPerFrame, " 个", v -> cfg.chunkCompile.maxPerFrame = v.intValue());
+				y += ROW_HEIGHT;
+
+				slider(boxX, y, boxW + sliderW + 2, "player_exempt", "玩家附近豁免（脚下的区块永不节流）", 0, 8, 1,
+					cfg.chunkCompile.playerExemptRadius, " 区块", v -> cfg.chunkCompile.playerExemptRadius = v.intValue());
 				y += ROW_HEIGHT;
 
 				toggle(boxX, y, boxW + sliderW + 2, "orb_aggregate", "经验球同格聚合（2×2×2 方块）",

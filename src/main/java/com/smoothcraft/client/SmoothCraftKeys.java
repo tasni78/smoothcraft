@@ -67,7 +67,11 @@ public final class SmoothCraftKeys {
 		}
 
 		while (reloadConfig.consumeClick()) {
-			SmoothCraftConfig.reload();
+			// 设置界面持有旧的配置实例引用，此时热重载会替换 instance，
+			// 导致界面上未保存的修改在「保存」时静默丢失。与 F6 一样，界面打开时不响应。
+			if (Minecraft.getInstance().screen == null) {
+				SmoothCraftConfig.reload();
+			}
 		}
 
 		if (changed) {

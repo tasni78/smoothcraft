@@ -4,6 +4,7 @@ import com.smoothcraft.client.ChunkCompileBudget;
 import com.smoothcraft.client.ItemAggregator;
 import com.smoothcraft.client.RenderDistanceRamp;
 import com.smoothcraft.client.Stats;
+import com.smoothcraft.client.WorldLoadTimer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import org.spongepowered.asm.mixin.Mixin;
@@ -34,6 +35,7 @@ public class FrameResetMixin {
 			RenderDistanceRamp.reset();
 		} else {
 			RenderDistanceRamp.onWorldJoin();
+			WorldLoadTimer.reset();
 		}
 	}
 }

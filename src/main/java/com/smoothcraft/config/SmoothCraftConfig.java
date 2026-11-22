@@ -27,6 +27,19 @@ public final class SmoothCraftConfig {
 	/** 总开关：关掉后本模组的所有优化都不再生效（方便排查问题）。 */
 	public boolean enabled = true;
 
+	/**
+	 * 配置结构版本，用于旧配置迁移。
+	 *
+	 * 注意：初始值必须是 0，不能是当前版本号 —— Gson 反序列化老配置时，
+	 * JSON 里没有这个字段就会保留字段初始值。若初始值写成 2，
+	 * 老配置会被误认为"已是最新"，迁移永远不执行（这个坑踩过）。
+	 * 迁移代码负责把它升到 {@link #CURRENT_CONFIG_VERSION}。
+	 */
+	public int configVersion = 0;
+
+	/** 当前配置结构版本。 */
+	public static final int CURRENT_CONFIG_VERSION = 3;
+
 	public EntityCulling entityCulling = new EntityCulling();
 	public BlockEntityCulling blockEntityCulling = new BlockEntityCulling();
 	public ParticleLimiting particleLimiting = new ParticleLimiting();
@@ -126,12 +139,22 @@ public final class SmoothCraftConfig {
 		/** 是否启用进入世界时的加载优化。 */
 		public boolean enabled = true;
 		/**
-		 * 不再等「脚下那一格网格编译完」才放行 —— 只要玩家所在区块的数据到了就进世界。
-		 * 进世界瞬间可能看到一小片空洞，等网格编译完会补齐。
+		 * 不再等「脚下那一格网格编译完」才放行，但也不是立刻放行 ——
+		 * 最多等这么多毫秒（0 = 立刻放行）。
+		 *
+		 * 默认关闭：实测"提前进世界"会让玩家站在未编译的地形上，看到空洞与闪白，
+		 * 体验比原版差。想要更快入场再手动打开。
 		 */
-		public boolean skipLoadingWait = true;
-		/** 入场后视距从 startChunks 开始逐秒爬升，避免一进世界就要编译上千区块。 */
-		public boolean rampEnabled = true;
+		public boolean skipLoadingWait = false;
+		/** 提前放行的最长等待时间（毫秒）。0 表示一拿到区块数据就进。 */
+		public int skipWaitMaxMs = 1500;
+		/**
+		 * 入场后视距爬坡。
+		 *
+		 * 默认关闭：把有效视距钳到几格，等于强行截断可见范围，
+		 * 画面外会出现一大片空洞（天空盒），观感比原版的"区块逐渐冒出来"差得多。
+		 */
+		public boolean rampEnabled = false;
 		/** 爬坡起始视距（格）。 */
 		public int startChunks = 4;
 		/** 每秒增加的格数。 */
@@ -147,6 +170,11 @@ public final class SmoothCraftConfig {
 		 * 摊到多帧能削平尖峰。被跳过的区块仍是脏的，下一帧会重试，不会漏建。
 		 */
 		public int maxPerFrame = 6;
+		/**
+		 * 玩家周围这么多区块内的段永远不节流（单位：区块，0 = 不豁免）。
+		 * 脚下的地形必须最快重建，否则会出现"站着看空洞/闪白"。
+		 */
+		public int playerExemptRadius = 3;
 	}
 
 	public static class SignText {
@@ -233,35 +261,57 @@ public final class SmoothCraftConfig {
 		return FabricLoader.getInstance().getConfigDir().resolve("smoothcraft.json");
 	}
 
-	public static synchronized void load() {
+	/**
+	 * 从磁盘读取配置。文件不存在、读取失败或内容为空时返回 null。
+	 * 这里绝不碰 instance、也不写盘 —— 失败如何处理由调用方决定。
+	 */
+	private static SmoothCraftConfig tryReadFromDisk() {
 		Path path = configPath();
-		SmoothCraftConfig loaded = null;
-
-		if (Files.exists(path)) {
-			try (Reader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
-				loaded = GSON.fromJson(reader, SmoothCraftConfig.class);
-			} catch (Exception e) {
-				LOGGER.warn("[SmoothCraft] 配置文件读取失败，将使用默认值。", e);
-			}
+		if (!Files.exists(path)) {
+			return null;
 		}
+		try (Reader reader = Files.newBufferedReader(path, StandardCharsets.UTF_8)) {
+			return GSON.fromJson(reader, SmoothCraftConfig.class);
+		} catch (Exception e) {
+			LOGGER.warn("[SmoothCraft] 配置文件读取失败：{}", path, e);
+			return null;
+		}
+	}
 
+	/** 启动时加载：文件缺失或损坏时用默认配置，并写盘。 */
+	public static synchronized void load() {
+		SmoothCraftConfig loaded = tryReadFromDisk();
 		if (loaded == null) {
 			loaded = new SmoothCraftConfig();
 		}
-
 		// 老配置缺少新字段时（Gson 会留空），用默认值补上
 		loaded.fillDefaults();
 		instance = loaded;
 		save();
 	}
 
-	/** 热重载：重新读盘，失败则保留当前配置。 */
+	/** 热重载：重新读盘，失败则保留当前配置（不写盘，避免把错误配置覆盖掉）。 */
 	public static synchronized void reload() {
-		load();
+		SmoothCraftConfig loaded = tryReadFromDisk();
+		if (loaded == null) {
+			LOGGER.warn("[SmoothCraft] 配置重载失败，保留当前配置不变。");
+			return;
+		}
+		loaded.fillDefaults();
+		instance = loaded;
 		LOGGER.info("[SmoothCraft] 配置已重新加载。");
 	}
 
 	private void fillDefaults() {
+		if (configVersion < CURRENT_CONFIG_VERSION) {
+			// 迁移：v1.0.4 的"提前放行 + 视距爬坡"实测会制造空洞与闪白，
+			// 比原版体验更差，这里把老配置里的这两个开关强制关掉。
+			if (worldLoad != null) {
+				worldLoad.skipLoadingWait = false;
+				worldLoad.rampEnabled = false;
+			}
+			configVersion = CURRENT_CONFIG_VERSION;
+		}
 		if (entityCulling == null) entityCulling = new EntityCulling();
 		if (blockEntityCulling == null) blockEntityCulling = new BlockEntityCulling();
 		if (particleLimiting == null) particleLimiting = new ParticleLimiting();

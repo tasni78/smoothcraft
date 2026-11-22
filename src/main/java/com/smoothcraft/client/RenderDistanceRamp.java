@@ -1,6 +1,7 @@
 package com.smoothcraft.client;
 
 import com.smoothcraft.config.SmoothCraftConfig;
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.Util;
 
 /**
@@ -15,21 +16,25 @@ import net.minecraft.util.Util;
  */
 public final class RenderDistanceRamp {
 	private static long startedAt = -1L;
+	/** 已进入世界但还没真正"看见画面"（加载界面还开着）。 */
+	private static boolean pending;
 	private static int currentLimit = -1;
 	private static int currentTarget = -1;
 
 	private RenderDistanceRamp() {
 	}
 
-	/** 进入世界时调用，开始爬坡。 */
+	/** 进入世界时调用，等加载界面关掉之后才真正开始爬坡。 */
 	public static void onWorldJoin() {
-		startedAt = Util.getMillis();
+		pending = true;
+		startedAt = -1L;
 		currentLimit = -1;
 		currentTarget = -1;
 	}
 
 	/** 退出世界时调用，恢复原状。 */
 	public static void reset() {
+		pending = false;
 		startedAt = -1L;
 		currentLimit = -1;
 		currentTarget = -1;
@@ -42,7 +47,22 @@ public final class RenderDistanceRamp {
 	/** 把「设置里的视距」钳到当前允许的值。返回 configured 表示不限制。 */
 	public static int apply(int configured) {
 		SmoothCraftConfig cfg = SmoothCraftConfig.get();
-		if (!cfg.enabled || !cfg.worldLoad.enabled || !cfg.worldLoad.rampEnabled || startedAt < 0L) {
+		if (!cfg.enabled || !cfg.worldLoad.enabled || !cfg.worldLoad.rampEnabled) {
+			return configured;
+		}
+
+		// 加载界面还开着的时候不爬坡：那段时间不渲染世界，
+		// 提前爬完等于白爬，还会让刚进世界的头几帧视距剧烈变化。
+		if (pending) {
+			Minecraft mc = Minecraft.getInstance();
+			if (mc == null || mc.level == null || mc.screen != null) {
+				return configured;
+			}
+			startedAt = Util.getMillis();
+			pending = false;
+		}
+
+		if (startedAt < 0L) {
 			return configured;
 		}
 
